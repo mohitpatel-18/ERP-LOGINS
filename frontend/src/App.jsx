@@ -1,4 +1,15 @@
+import Home from './components/home/Home.jsx'
+import react from 'react'
+
 function App() {
-  return <h1>School Management System</h1>;
+   
+
+  return (
+    <>
+ <Home/>
+       
+    </>
+  )
 }
-export default App;
+
+export default App
