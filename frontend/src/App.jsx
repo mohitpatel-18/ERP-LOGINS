@@ -1,27 +1,52 @@
 import { Routes, Route } from "react-router-dom";
 
-import Home from "./components/home/Home.jsx";
-import About from "./components/about/About.jsx";
-import Contact from "./components/contact/Contact.jsx";
-import Erp from "./components/erp/Erp.jsx";
-import AdminLogin from "./components/erp/AdminLogin.jsx";
-import StudentLogin from "./components/erp/StudentLogin.jsx";
-import TeacherLogin from "./components/erp/TeacherLogin.jsx";
-import AdminDashboard from "./components/erp/AdminDashboard.jsx";
-function App() {
+/* Public Pages */
+import Home from "./components/home/Home";
+import About from "./components/about/About";
+import Contact from "./components/contact/Contact";
+import ErpHome from "./components/erp/erpHome";
+
+/* Auth Pages */
+import AdminLogin from "./components/erp/AdminLogin";
+import StudentLogin from "./components/erp/StudentLogin";
+import TeacherLogin from "./components/erp/TeacherLogin";
+
+/* Admin Protected */
+import ProtectedAdminRoute from "./ProtectedAdminRoute";
+import AdminLayout from "./components/erp/admin/AdminLayout";
+import DashboardHome from "./components/erp/admin/DashboardHome";
+import AddTeacher from "./components/erp/admin/AddTeacher";
+import ManageTeachers from "./components/erp/admin/ManageTeachers";
+import ViewStudents from "./components/erp/admin/ViewStudents";
+
+export default function App() {
   return (
     <Routes>
+      {/* PUBLIC */}
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
-      <Route path="/erp" element={<Erp />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/erp" element={<ErpHome />} />
+
+      {/* AUTH */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/student/login" element={<StudentLogin />} />
       <Route path="/teacher/login" element={<TeacherLogin />} />
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+      {/* ADMIN (PROTECTED) */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedAdminRoute>
+            <AdminLayout />
+          </ProtectedAdminRoute>
+        }
+      >
+        <Route path="dashboard" element={<DashboardHome />} />
+        <Route path="add-teacher" element={<AddTeacher />} />
+        <Route path="manage-teachers" element={<ManageTeachers />} />
+        <Route path="students" element={<ViewStudents />} />
+      </Route>
     </Routes>
   );
 }
-
-export default App;
-

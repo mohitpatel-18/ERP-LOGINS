@@ -1,9 +1,11 @@
+
+
+
 export default function DashboardHome() {
   const cards = [
-    { title: "Add Teacher", icon: "➕" },
-    { title: "Manage Teachers", icon: "🧑‍🏫" },
-    { title: "Students", icon: "🎓" },
-    { title: "Classes", icon: "🏫" },
+    { title: "total teacher" },
+    { title: "total students" },
+   
   ];
 
   return (
@@ -16,7 +18,7 @@ export default function DashboardHome() {
             key={card.title}
             className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition cursor-pointer"
           >
-            <div className="text-3xl">{card.icon}</div>
+             
             <h3 className="mt-4 font-semibold">{card.title}</h3>
           </div>
         ))}

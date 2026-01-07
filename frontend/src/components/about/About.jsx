@@ -1,3 +1,5 @@
+
+import { Link } from "react-router-dom";
 export default function About() {
   return (
     <>
@@ -134,7 +136,7 @@ export default function About() {
           </p>
 
           <button className="px-10 py-3 bg-yellow-400 text-slate-900 font-semibold rounded-xl hover:bg-yellow-300 hover:scale-105 transition">
-            Contact Us
+           <Link to="/contact">Contact Us</Link>
           </button>
         </div>
       </section>

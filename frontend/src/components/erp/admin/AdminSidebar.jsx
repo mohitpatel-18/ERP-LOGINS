@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
 
 const menu = [
-  { name: "Dashboard", path: "/admin/dashboard", icon: "📊" },
-  { name: "Add Teacher", path: "/admin/add-teacher", icon: "➕" },
-  { name: "Manage Teachers", path: "/admin/manage-teachers", icon: "🧑‍🏫" },
-  { name: "Students", path: "/admin/students", icon: "🎓" },
+  { name: "Dashboard", path: "/admin/dashboard" },
+  { name: "Add Teacher", path: "/admin/add-teacher" },
+  { name: "Manage Teachers", path: "/admin/manage-teachers" },
+  { name: "Students", path: "/admin/students" },
 ];
 
 export default function AdminSidebar() {
@@ -22,7 +22,7 @@ export default function AdminSidebar() {
                ${isActive ? "bg-yellow-400 text-black" : "hover:bg-slate-700"}`
             }
           >
-            <span className="text-xl">{item.icon}</span>
+             
             {item.name}
           </NavLink>
         ))}

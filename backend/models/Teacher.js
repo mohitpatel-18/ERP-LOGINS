@@ -2,29 +2,24 @@ import mongoose from "mongoose";
 
 const teacherSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
+    name: String,
     email: {
       type: String,
-      required: true,
       unique: true,
     },
-    mobile: {
-      type: String,
-      required: true,
-    },
-    subject: {
-      type: String,
-      required: true,
-    },
-    assignedClass: {
-      type: String,
-    },
+    phone: String,
+    subject: String,
+    classAssigned: String,
+    qualification: String,
+
+    // login fields
     password: {
       type: String,
       required: true,
+    },
+    role: {
+      type: String,
+      default: "teacher",
     },
   },
   { timestamps: true }
