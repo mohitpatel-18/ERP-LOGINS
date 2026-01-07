@@ -8,11 +8,11 @@ import Footer from "./Footer.jsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+ 
     <BrowserRouter>
       <Header />
       <App />
       <Footer />
     </BrowserRouter>
-  </StrictMode>
+ 
 );
