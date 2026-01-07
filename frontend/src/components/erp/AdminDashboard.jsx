@@ -1,3 +1,6 @@
+
+import RegisterTeacher from "./registerTeacher";
+
 export default function AdminDashboard() {
   return (
     <div className="min-h-screen p-8 bg-gray-100">
@@ -10,7 +13,10 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-semibold mb-2">
             Register New Teacher
           </h2>
-          <p>Add teacher details and assign classes</p>
+          <div>
+            <RegisterTeacher/>
+
+          </div>
         </div>
 
         <div className="bg-white p-6 rounded shadow">
