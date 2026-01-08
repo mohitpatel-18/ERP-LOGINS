@@ -1,9 +1,12 @@
 import express from "express";
-import { getAllTeachers } from "../controllers/teacherController.js";
+import { getAllTeachers, teacherLogin } from "../controllers/teacherController.js";
 
 const router = express.Router();
 
-// GET → All teachers
+// LOGIN
+router.post("/login", teacherLogin);
+
+// GET ALL TEACHERS
 router.get("/", getAllTeachers);
 
 export default router;

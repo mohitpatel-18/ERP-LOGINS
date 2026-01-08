@@ -67,4 +67,38 @@ export const getAllTeachers = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+import jwt from "jsonwebtoken";
+
+export const teacherLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const teacher = await Teacher.findOne({ email });
+    if (!teacher) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const isMatch = await bcrypt.compare(password, teacher.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      { id: teacher._id, role: "teacher" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      token,
+      teacher: {
+        id: teacher._id,
+        name: teacher.name,
+        email: teacher.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
