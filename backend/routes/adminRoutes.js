@@ -1,9 +1,9 @@
 import express from "express";
 import { addTeacher } from "../controllers/teacherController.js";
-import { adminLogin } from "../controllers/adminController.js";
+import adminAuth from "../middleware/adminAuth.js";
+
 const router = express.Router();
 
-// POST → Add Teacher
-router.post("/add-teacher", addTeacher);
-router.post("/login", adminLogin);
+router.post("/add-teacher", adminAuth, addTeacher);
+
 export default router;

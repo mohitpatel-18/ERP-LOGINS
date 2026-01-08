@@ -21,6 +21,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/students", studentRoutes);
+ 
 
 app.get("/", (req, res) => {
   res.send("Backend running successfully 🚀");

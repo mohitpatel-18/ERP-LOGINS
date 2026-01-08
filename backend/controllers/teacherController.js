@@ -1,12 +1,8 @@
 import Teacher from "../models/Teacher.js";
 import bcrypt from "bcryptjs";
-import sendEmail from "../utils/sendEmail.js";
+import jwt from "jsonwebtoken";
 
-const generatePassword = () => {
-  return Math.random().toString(36).slice(-8);
-};
-
-// ADD TEACHER
+/* ================= ADD TEACHER ================= */
 export const addTeacher = async (req, res) => {
   try {
     const {
@@ -23,8 +19,8 @@ export const addTeacher = async (req, res) => {
       return res.status(409).json({ message: "Teacher already exists" });
     }
 
-    const plainPassword = generatePassword();
-    const hashedPassword = await bcrypt.hash(plainPassword, 10);
+    const password = "teacher123"; // temp password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await Teacher.create({
       name,
@@ -36,39 +32,40 @@ export const addTeacher = async (req, res) => {
       password: hashedPassword,
     });
 
-    await sendEmail(
-      email,
-      "Your Teacher Account Credentials",
-      `
-        <h3>Welcome ${name}</h3>
-        <p>Your teacher account has been created.</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Password:</strong> ${plainPassword}</p>
-        <p>Please login and change your password.</p>
-      `
-    );
-
-    res.status(201).json({
-      message: "Teacher added & email sent",
-    });
+    res.status(201).json({ message: "Teacher added successfully" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// GET ALL TEACHERS
+/* ================= GET ALL TEACHERS ================= */
 export const getAllTeachers = async (req, res) => {
   try {
-    const teachers = await Teacher.find().sort({ createdAt: -1 });
+    const teachers = await Teacher.find().select("-password");
     res.status(200).json(teachers);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
-import jwt from "jsonwebtoken";
 
+/* ================= DELETE TEACHER ================= */
+export const deleteTeacher = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const teacher = await Teacher.findById(id);
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+
+    await Teacher.findByIdAndDelete(id);
+    res.json({ message: "Teacher deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* ================= TEACHER LOGIN ================= */
 export const teacherLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -84,55 +81,13 @@ export const teacherLogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-  {
-    id: teacher._id,
-    role: "teacher",
-    classAssigned: teacher.classAssigned,
-  },
-  process.env.JWT_SECRET,
-  { expiresIn: "1d" }
-);
+      { id: teacher._id, role: "teacher" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
-
-    res.json({
-      token,
-      teacher: {
-        id: teacher._id,
-        name: teacher.name,
-        email: teacher.email,
-      },
-    });
+    res.json({ token });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
-// GET MY PROFILE
-export const getMyProfile = async (req, res) => {
-  try {
-    const teacher = await Teacher.findById(req.user.id).select("-password");
-    res.json(teacher);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// UPDATE MY PROFILE
-export const updateMyProfile = async (req, res) => {
-  try {
-    const { name, phone, qualification } = req.body;
-
-    const teacher = await Teacher.findByIdAndUpdate(
-      req.user.id,
-      { name, phone, qualification },
-      { new: true }
-    ).select("-password");
-
-    res.json({
-      message: "Profile updated successfully",
-      teacher,
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
