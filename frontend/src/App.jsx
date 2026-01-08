@@ -18,10 +18,19 @@ import DashboardHome from "./components/erp/admin/DashboardHome";
 import AddTeacher from "./components/erp/admin/AddTeacher";
 import ManageTeachers from "./components/erp/admin/ManageTeachers";
 import ViewStudents from "./components/erp/admin/ViewStudents";
+import AttendanceReports from "./components/erp/admin/AttendanceReports";
 
 /* Teacher */
 import ProtectedTeacherRoute from "./components/erp/teacher/ProtectedTeacherRoute";
+import TeacherLayout from "./components/erp/teacher/TeacherLayout";
 import TeacherDashboard from "./components/erp/teacher/TeacherDashboard";
+import AttendanceHistory from "./components/erp/teacher/AttendanceHistory";
+import ClassStudents from "./components/erp/teacher/ClassStudents";
+import TeacherProfile from "./components/erp/teacher/TeacherProfile";
+import Attendance from "./components/erp/teacher/Attendance";
+import AddStudent from "./components/erp/teacher/AddStudent";
+
+
 
 export default function App() {
   return (
@@ -37,7 +46,7 @@ export default function App() {
       <Route path="/student/login" element={<StudentLogin />} />
       <Route path="/teacher/login" element={<TeacherLogin />} />
 
-      {/* ADMIN DASHBOARD */}
+      {/* ADMIN */}
       <Route
         path="/admin"
         element={
@@ -50,17 +59,25 @@ export default function App() {
         <Route path="add-teacher" element={<AddTeacher />} />
         <Route path="manage-teachers" element={<ManageTeachers />} />
         <Route path="students" element={<ViewStudents />} />
+        <Route path="attendance-reports" element={<AttendanceReports />} />
       </Route>
 
-      {/* TEACHER DASHBOARD */}
+      {/* TEACHER */}
       <Route
-        path="/teacher/dashboard"
+        path="/teacher"
         element={
           <ProtectedTeacherRoute>
-            <TeacherDashboard />
+            <TeacherLayout />
           </ProtectedTeacherRoute>
         }
-      />
+      >
+        <Route path="dashboard" element={<TeacherDashboard />} />
+        <Route path="attendance" element={<Attendance />} />
+        <Route path="attendance-history" element={<AttendanceHistory />} />
+        <Route path="students" element={<ClassStudents />} />
+        <Route path="profile" element={<TeacherProfile />} />
+        <Route path="add-student" element={<AddStudent />} />
+      </Route>
     </Routes>
   );
 }

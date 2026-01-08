@@ -9,3 +9,4 @@ export default function ProtectedTeacherRoute({ children }) {
 
   return children;
 }
+

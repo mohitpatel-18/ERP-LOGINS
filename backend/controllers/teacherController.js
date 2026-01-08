@@ -84,10 +84,15 @@ export const teacherLogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: teacher._id, role: "teacher" },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+  {
+    id: teacher._id,
+    role: "teacher",
+    classAssigned: teacher.classAssigned,
+  },
+  process.env.JWT_SECRET,
+  { expiresIn: "1d" }
+);
+
 
     res.json({
       token,
@@ -98,6 +103,35 @@ export const teacherLogin = async (req, res) => {
       },
     });
   } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+// GET MY PROFILE
+export const getMyProfile = async (req, res) => {
+  try {
+    const teacher = await Teacher.findById(req.user.id).select("-password");
+    res.json(teacher);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// UPDATE MY PROFILE
+export const updateMyProfile = async (req, res) => {
+  try {
+    const { name, phone, qualification } = req.body;
+
+    const teacher = await Teacher.findByIdAndUpdate(
+      req.user.id,
+      { name, phone, qualification },
+      { new: true }
+    ).select("-password");
+
+    res.json({
+      message: "Profile updated successfully",
+      teacher,
+    });
+  } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 };

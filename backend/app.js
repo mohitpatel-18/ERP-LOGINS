@@ -5,6 +5,10 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
+import attendanceRoutes from "./routes/attendanceRoutes.js";
+import studentRoutes from "./routes/studentRoutes.js";
+
+
 dotenv.config(); // ✅ load env
 
 const app = express();
@@ -15,6 +19,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/teachers", teacherRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/students", studentRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend running successfully 🚀");

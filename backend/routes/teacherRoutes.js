@@ -10,3 +10,11 @@ router.post("/login", teacherLogin);
 router.get("/", getAllTeachers);
 
 export default router;
+import {
+  getMyProfile,
+  updateMyProfile,
+} from "../controllers/teacherController.js";
+import teacherAuth from "../middleware/teacherAuth.js";
+
+router.get("/me", teacherAuth, getMyProfile);
+router.put("/me", teacherAuth, updateMyProfile);
