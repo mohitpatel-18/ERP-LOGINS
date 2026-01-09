@@ -8,7 +8,7 @@ import ErpHome from "./components/erp/erpHome";
 
 /* ================= AUTH ================= */
 import AdminLogin from "./components/erp/AdminLogin";
-import StudentLogin from "./components/erp/StudentLogin";
+import StudentLogin from "./components/erp/student/StudentLogin";
 import TeacherLogin from "./components/erp/teacher/TeacherLogin";
 
 /* ================= ADMIN ================= */
@@ -35,6 +35,16 @@ import TeacherForgotPassword from "./components/erp/teacher/ForgotPassword";
 import TeacherVerifyOtp from "./components/erp/teacher/VerifyOTP";
 import TeacherResetPassword from "./components/erp/teacher/ResetPassword";
 
+/* ================= STUDENT ================= */
+import ProtectedStudentRoute from "./components/erp/student/ProtectedStudentRoute";
+import StudentLayout from "./components/erp/student/StudentLayout";
+import StudentDashboard from "./components/erp/student/StudentDashboard";
+
+/* ===== STUDENT PASSWORD RESET (PUBLIC) ===== */
+import StudentForgotPassword from "./components/erp/student/ForgotPassword";
+import StudentVerifyOtp from "./components/erp/student/VerifyOtp";
+import StudentResetPassword from "./components/erp/student/ResetPassword";
+
 export default function App() {
   return (
     <Routes>
@@ -46,8 +56,8 @@ export default function App() {
 
       {/* ========== AUTH ========== */}
       <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/student/login" element={<StudentLogin />} />
       <Route path="/teacher/login" element={<TeacherLogin />} />
+      <Route path="/student/login" element={<StudentLogin />} />
 
       {/* ========== ADMIN DASHBOARD ========== */}
       <Route
@@ -82,7 +92,7 @@ export default function App() {
         <Route path="profile" element={<TeacherProfile />} />
       </Route>
 
-      {/* ========== TEACHER PASSWORD RESET (NO PROTECTION) ========== */}
+      {/* ========== TEACHER PASSWORD RESET (PUBLIC) ========== */}
       <Route
         path="/teacher/forgot-password"
         element={<TeacherForgotPassword />}
@@ -94,6 +104,32 @@ export default function App() {
       <Route
         path="/teacher/reset-password"
         element={<TeacherResetPassword />}
+      />
+
+      {/* ========== STUDENT DASHBOARD ========== */}
+      <Route
+        path="/student"
+        element={
+          <ProtectedStudentRoute>
+            <StudentLayout />
+          </ProtectedStudentRoute>
+        }
+      >
+        <Route path="dashboard" element={<StudentDashboard />} />
+      </Route>
+
+      {/* ========== STUDENT PASSWORD RESET (PUBLIC) ========== */}
+      <Route
+        path="/student/forgot-password"
+        element={<StudentForgotPassword />}
+      />
+      <Route
+        path="/student/verify-otp"
+        element={<StudentVerifyOtp />}
+      />
+      <Route
+        path="/student/reset-password"
+        element={<StudentResetPassword />}
       />
     </Routes>
   );
