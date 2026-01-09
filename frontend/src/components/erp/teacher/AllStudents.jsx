@@ -1,9 +1,14 @@
+
+import ClassStudents from "./ClassStudents"
+
 export default function AllStudents() {
 
 return(
 
-<div>AllStudents</div>
+<div>
 
+<ClassStudents />
+</div>
 
 
 )
