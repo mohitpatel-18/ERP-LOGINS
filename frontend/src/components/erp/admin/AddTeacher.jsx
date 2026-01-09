@@ -7,8 +7,9 @@ export default function AddTeacher() {
     phone: "",
     subject: "",
     classAssigned: "",
-    qualification: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,12 +17,16 @@ export default function AddTeacher() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    const token = localStorage.getItem("adminToken");
 
     try {
       const res = await fetch("http://localhost:5000/api/admin/add-teacher", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ FIX: admin token
         },
         body: JSON.stringify(formData),
       });
@@ -29,11 +34,12 @@ export default function AddTeacher() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || "Error");
+        alert(data.message || "Error while saving teacher");
+        setLoading(false);
         return;
       }
 
-      alert("Teacher saved");
+      alert("✅ Teacher added successfully");
 
       setFormData({
         name: "",
@@ -41,25 +47,32 @@ export default function AddTeacher() {
         phone: "",
         subject: "",
         classAssigned: "",
-        qualification: "",
       });
     } catch (error) {
-      alert("Server error");
+      alert("❌ Server error");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-3xl bg-white rounded-xl shadow-md p-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
+    <div className="max-w-4xl bg-white rounded-2xl shadow-lg p-8">
+      <h2 className="text-2xl font-bold mb-2 text-gray-800">
         Add New Teacher
       </h2>
+      <p className="text-sm text-gray-500 mb-6">
+        Fill in the details to create a new teacher account
+      </p>
 
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-5"
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
+        {/* Full Name */}
         <div>
-          <label className="block text-sm font-medium mb-1">Full Name</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            Full Name
+          </label>
           <input
             type="text"
             name="name"
@@ -67,12 +80,15 @@ export default function AddTeacher() {
             onChange={handleChange}
             required
             placeholder="Enter teacher name"
-            className="w-full border rounded-lg px-4 py-2 outline-none"
+            className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
+        {/* Email */}
         <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            Email
+          </label>
           <input
             type="email"
             name="email"
@@ -80,25 +96,31 @@ export default function AddTeacher() {
             onChange={handleChange}
             required
             placeholder="teacher@email.com"
-            className="w-full border rounded-lg px-4 py-2 outline-none"
+            className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
+        {/* Phone */}
         <div>
-          <label className="block text-sm font-medium mb-1">Mobile Number</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            Mobile Number
+          </label>
           <input
             type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
             required
-            placeholder="+91 XXXXX XXXXX"
-            className="w-full border rounded-lg px-4 py-2 outline-none"
+            placeholder="+91 XXXXXXXXXX"
+            className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
+        {/* Subject */}
         <div>
-          <label className="block text-sm font-medium mb-1">Subject</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            Subject
+          </label>
           <input
             type="text"
             name="subject"
@@ -106,12 +128,13 @@ export default function AddTeacher() {
             onChange={handleChange}
             required
             placeholder="Mathematics"
-            className="w-full border rounded-lg px-4 py-2 outline-none"
+            className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
+        {/* Class */}
         <div>
-          <label className="block text-sm font-medium mb-1">
+          <label className="block text-sm font-medium mb-1 text-gray-700">
             Assigned Class
           </label>
           <input
@@ -119,31 +142,23 @@ export default function AddTeacher() {
             name="classAssigned"
             value={formData.classAssigned}
             onChange={handleChange}
-            placeholder="e.g. 8A"
-            className="w-full border rounded-lg px-4 py-2 outline-none"
+            placeholder="e.g. 10A"
+            className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Qualification
-          </label>
-          <input
-            type="text"
-            name="qualification"
-            value={formData.qualification}
-            onChange={handleChange}
-            placeholder="B.Ed / M.Sc / M.A"
-            className="w-full border rounded-lg px-4 py-2 outline-none"
-          />
-        </div>
-
-        <div className="md:col-span-2 flex justify-end mt-4">
+        {/* Button */}
+        <div className="md:col-span-2 flex justify-end mt-6">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+            disabled={loading}
+            className={`px-6 py-2 rounded-lg text-white transition ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            Save Teacher
+            {loading ? "Saving..." : "Save Teacher"}
           </button>
         </div>
       </form>

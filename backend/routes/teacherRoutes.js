@@ -3,6 +3,7 @@ import {
   getAllTeachers,
   teacherLogin,
   addTeacher,
+  deleteTeacher,
   getMyProfile,
   updateMyProfile,
   forgotPassword,
@@ -11,6 +12,7 @@ import {
 } from "../controllers/teacherController.js";
 
 import teacherAuth from "../middleware/teacherAuth.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 const router = express.Router();
 
@@ -22,8 +24,9 @@ router.post("/login", teacherLogin);
 /* =========================
    ADMIN / TEACHERS
 ========================= */
-router.get("/", getAllTeachers);
-router.post("/add", addTeacher);
+router.get("/", adminAuth, getAllTeachers);
+router.post("/add", adminAuth, addTeacher);
+router.delete("/:id", adminAuth, deleteTeacher);
 
 /* =========================
    PROFILE

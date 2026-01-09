@@ -10,7 +10,8 @@ export const getAllTeachers = async (req, res) => {
   try {
     const teachers = await Teacher.find().select("-password");
     res.json(teachers);
-  } catch {
+  } catch (err) {
+    console.error("GET ALL TEACHERS ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -44,51 +45,48 @@ export const addTeacher = async (req, res) => {
       email,
       "Teacher Account Created",
       `<h3>Welcome ${name}</h3>
-       <p>Email: ${email}</p>
-       <p>Password: ${plainPassword}</p>`
+       <p>Email: <b>${email}</b></p>
+       <p>Password: <b>${plainPassword}</b></p>
+       <p>Please login and change your password.</p>`
     );
 
     res.status(201).json({ message: "Teacher added successfully" });
-  } catch {
+  } catch (err) {
+    console.error("ADD TEACHER ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
 /* =========================
-   TEACHER LOGIN
+   DELETE TEACHER (ADMIN)
 ========================= */
-export const teacherLogin = async (req, res) => {
+export const deleteTeacher = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { id } = req.params;
 
-    const teacher = await Teacher.findOne({ email });
+    const teacher = await Teacher.findById(id);
     if (!teacher)
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(404).json({ message: "Teacher not found" });
 
-    const match = await bcrypt.compare(password, teacher.password);
-    if (!match)
-      return res.status(401).json({ message: "Invalid credentials" });
+    await Teacher.findByIdAndDelete(id);
 
-    const token = jwt.sign(
-      { id: teacher._id, role: "teacher" },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
-    res.json({ token, teacher });
-  } catch {
+    res.json({ message: "Teacher deleted successfully" });
+  } catch (err) {
+    console.error("DELETE TEACHER ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+
 /* =========================
-   MY PROFILE ✅ (MISSING FIX)
+   MY PROFILE
 ========================= */
 export const getMyProfile = async (req, res) => {
   try {
     const teacher = await Teacher.findById(req.teacher.id).select("-password");
     res.json(teacher);
-  } catch {
+  } catch (err) {
+    console.error("GET PROFILE ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -104,7 +102,8 @@ export const updateMyProfile = async (req, res) => {
     ).select("-password");
 
     res.json({ message: "Profile updated", teacher });
-  } catch {
+  } catch (err) {
+    console.error("UPDATE PROFILE ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -126,10 +125,15 @@ export const forgotPassword = async (req, res) => {
     teacher.resetOTPExpiry = Date.now() + 10 * 60 * 1000;
     await teacher.save();
 
-    await sendEmail(email, "Password Reset OTP", `OTP: ${otp}`);
+    await sendEmail(
+      email,
+      "Password Reset OTP",
+      `<h3>Your OTP is: ${otp}</h3><p>Valid for 10 minutes</p>`
+    );
 
-    res.json({ message: "OTP sent" });
-  } catch {
+    res.json({ message: "OTP sent to email" });
+  } catch (err) {
+    console.error("FORGOT PASSWORD ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -164,7 +168,8 @@ export const verifyOtp = async (req, res) => {
     await teacher.save();
 
     res.json({ resetToken });
-  } catch {
+  } catch (err) {
+    console.error("VERIFY OTP ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -187,13 +192,51 @@ export const resetPassword = async (req, res) => {
     if (!teacher)
       return res.status(400).json({ message: "Invalid or expired token" });
 
+    // ✅ bcrypt hash confirmed
     teacher.password = await bcrypt.hash(password, 10);
     teacher.resetPasswordToken = null;
     teacher.resetPasswordExpiry = null;
     await teacher.save();
 
     res.json({ message: "Password reset successful" });
-  } catch {
+  } catch (err) {
+    console.error("RESET PASSWORD ERROR:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+export const teacherLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const teacher = await Teacher.findOne({ email });
+    if (!teacher)
+      return res.status(401).json({ message: "Invalid email or password" });
+
+    const isMatch = await bcrypt.compare(password, teacher.password);
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid email or password" });
+
+    const token = jwt.sign(
+      {
+        id: teacher._id,
+        role: "teacher",
+        classAssigned: teacher.classAssigned, // 🔥 REQUIRED
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      token,
+      teacher: {
+        id: teacher._id,
+        name: teacher.name,
+        email: teacher.email,
+        classAssigned: teacher.classAssigned,
+      },
+    });
+  } catch (err) {
+    console.error("TEACHER LOGIN ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

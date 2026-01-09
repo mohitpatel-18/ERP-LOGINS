@@ -4,10 +4,17 @@ export default function ManageTeachers() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch teachers
+  // Fetch teachers (ADMIN)
   const fetchTeachers = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/teachers");
+      const token = localStorage.getItem("adminToken");
+
+      const res = await fetch("http://localhost:5000/api/teachers", {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ admin token
+        },
+      });
+
       const data = await res.json();
 
       if (!res.ok) {
@@ -28,50 +35,54 @@ export default function ManageTeachers() {
   }, []);
 
   // DELETE teacher
- const handleDelete = async (id) => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete this teacher?"
-  );
-  if (!confirmDelete) return;
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this teacher?"
+    );
+    if (!confirmDelete) return;
 
-  try {
-    const token = localStorage.getItem("adminToken");
+    try {
+      const token = localStorage.getItem("adminToken");
 
-    const res = await fetch(
-      `http://localhost:5000/api/teachers/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const res = await fetch(
+        `http://localhost:5000/api/teachers/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Failed to delete teacher");
+        return;
       }
-    );
 
-    const data = await res.json();
+      setTeachers((prev) =>
+        prev.filter((teacher) => teacher._id !== id)
+      );
 
-    if (!res.ok) {
-      alert(data.message || "Failed to delete teacher");
-      return;
+      alert("✅ Teacher deleted successfully");
+    } catch (error) {
+      alert("Server error");
     }
-
-    setTeachers((prev) =>
-      prev.filter((teacher) => teacher._id !== id)
-    );
-
-    alert("Teacher deleted successfully");
-  } catch (error) {
-    alert("Server error");
-  }
-};
-
+  };
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
+    <div className="p-6 bg-white rounded-2xl shadow-lg">
+      <h2 className="text-2xl font-bold mb-2 text-gray-800">
         Manage Teachers
       </h2>
+      <p className="text-sm text-gray-500 mb-6">
+        View and manage all teachers
+      </p>
 
-      {teachers.length === 0 ? (
+      {loading ? (
+        <p className="text-center text-gray-500">Loading teachers...</p>
+      ) : teachers.length === 0 ? (
         <p className="text-gray-500 text-center">
           No teachers found
         </p>
@@ -80,37 +91,48 @@ export default function ManageTeachers() {
           <table className="w-full border border-gray-200 rounded-lg">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border px-4 py-2">Actions</th>
+                <th className="border px-4 py-2 text-center">
+                  Actions
+                </th>
                 <th className="border px-4 py-2">Name</th>
                 <th className="border px-4 py-2">Email</th>
                 <th className="border px-4 py-2">Phone</th>
                 <th className="border px-4 py-2">Subject</th>
                 <th className="border px-4 py-2">Class</th>
-                <th className="border px-4 py-2">Qualification</th>
               </tr>
             </thead>
 
             <tbody>
               {teachers.map((teacher) => (
-                <tr key={teacher._id} className="hover:bg-gray-50">
+                <tr
+                  key={teacher._id}
+                  className="hover:bg-gray-50 transition"
+                >
                   <td className="border px-4 py-2 text-center">
                     <button
-                      onClick={() => handleDelete(teacher._id)}
-                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                      onClick={() =>
+                        handleDelete(teacher._id)
+                      }
+                      className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
                     >
                       Delete
                     </button>
                   </td>
 
-                  <td className="border px-4 py-2">{teacher.name}</td>
-                  <td className="border px-4 py-2">{teacher.email}</td>
-                  <td className="border px-4 py-2">{teacher.phone}</td>
-                  <td className="border px-4 py-2">{teacher.subject}</td>
                   <td className="border px-4 py-2">
-                    {teacher.classAssigned || "-"}
+                    {teacher.name}
                   </td>
                   <td className="border px-4 py-2">
-                    {teacher.qualification || "-"}
+                    {teacher.email}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {teacher.phone || "-"}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {teacher.subject || "-"}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {teacher.classAssigned || "-"}
                   </td>
                 </tr>
               ))}
