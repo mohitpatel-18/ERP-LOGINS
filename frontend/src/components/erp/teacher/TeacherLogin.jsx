@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function TeacherLogin() {
   const [email, setEmail] = useState("");
@@ -23,13 +23,10 @@ export default function TeacherLogin() {
         return;
       }
 
-      // SAVE TOKEN
       localStorage.setItem("teacherToken", data.token);
       localStorage.setItem("teacher", JSON.stringify(data.teacher));
 
-      // REDIRECT TO DASHBOARD
       navigate("/teacher/dashboard");
-
     } catch (err) {
       alert("Server error");
     }
@@ -77,11 +74,14 @@ export default function TeacherLogin() {
           </button>
         </form>
 
-        <div className="text-center mt-5 text-sm text-gray-600">
-          Forgot password?{" "}
-          <span className="text-blue-600 hover:underline cursor-pointer">
-            Contact Admin
-          </span>
+        
+        <div className="text-center mt-4">
+          <Link
+            to="/teacher/forgot-password"
+            className="text-blue-600 hover:underline font-medium"
+          >
+            Forgot password?
+          </Link>
         </div>
       </div>
     </div>

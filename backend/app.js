@@ -7,6 +7,9 @@ import adminRoutes from "./routes/adminRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import attendanceRoutes from "./routes/attendanceRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
+import teacherPasswordRoutes from "./routes/teacherPasswordRoutes.js";
+
+
 
 
 dotenv.config(); // ✅ load env
@@ -21,7 +24,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/students", studentRoutes);
- 
+app.use("/api/teacher/password", teacherPasswordRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend running successfully 🚀");

@@ -1,17 +1,17 @@
 import { Routes, Route } from "react-router-dom";
 
-/* Public */
+/* ================= PUBLIC ================= */
 import Home from "./components/home/Home";
 import About from "./components/about/About";
 import Contact from "./components/contact/Contact";
 import ErpHome from "./components/erp/erpHome";
 
-/* Auth */
+/* ================= AUTH ================= */
 import AdminLogin from "./components/erp/AdminLogin";
 import StudentLogin from "./components/erp/StudentLogin";
 import TeacherLogin from "./components/erp/teacher/TeacherLogin";
 
-/* Admin */
+/* ================= ADMIN ================= */
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
 import AdminLayout from "./components/erp/admin/AdminLayout";
 import DashboardHome from "./components/erp/admin/DashboardHome";
@@ -20,33 +20,36 @@ import ManageTeachers from "./components/erp/admin/ManageTeachers";
 import ViewStudents from "./components/erp/admin/ViewStudents";
 import AttendanceReports from "./components/erp/admin/AttendanceReports";
 
-/* Teacher */
+/* ================= TEACHER ================= */
 import ProtectedTeacherRoute from "./components/erp/teacher/ProtectedTeacherRoute";
 import TeacherLayout from "./components/erp/teacher/TeacherLayout";
 import TeacherDashboard from "./components/erp/teacher/TeacherDashboard";
+import Attendance from "./components/erp/teacher/Attendance";
 import AttendanceHistory from "./components/erp/teacher/AttendanceHistory";
 import ClassStudents from "./components/erp/teacher/ClassStudents";
 import TeacherProfile from "./components/erp/teacher/TeacherProfile";
-import Attendance from "./components/erp/teacher/Attendance";
 import AddStudent from "./components/erp/teacher/AddStudent";
 
-
+/* ===== TEACHER PASSWORD RESET (PUBLIC) ===== */
+import TeacherForgotPassword from "./components/erp/teacher/ForgotPassword";
+import TeacherVerifyOtp from "./components/erp/teacher/VerifyOTP";
+import TeacherResetPassword from "./components/erp/teacher/ResetPassword";
 
 export default function App() {
   return (
     <Routes>
-      {/* PUBLIC */}
+      {/* ========== PUBLIC ========== */}
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/erp" element={<ErpHome />} />
 
-      {/* AUTH */}
+      {/* ========== AUTH ========== */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/student/login" element={<StudentLogin />} />
       <Route path="/teacher/login" element={<TeacherLogin />} />
 
-      {/* ADMIN */}
+      {/* ========== ADMIN DASHBOARD ========== */}
       <Route
         path="/admin"
         element={
@@ -62,7 +65,7 @@ export default function App() {
         <Route path="attendance-reports" element={<AttendanceReports />} />
       </Route>
 
-      {/* TEACHER */}
+      {/* ========== TEACHER DASHBOARD ========== */}
       <Route
         path="/teacher"
         element={
@@ -75,9 +78,23 @@ export default function App() {
         <Route path="attendance" element={<Attendance />} />
         <Route path="attendance-history" element={<AttendanceHistory />} />
         <Route path="students" element={<ClassStudents />} />
-        <Route path="profile" element={<TeacherProfile />} />
         <Route path="add-student" element={<AddStudent />} />
+        <Route path="profile" element={<TeacherProfile />} />
       </Route>
+
+      {/* ========== TEACHER PASSWORD RESET (NO PROTECTION) ========== */}
+      <Route
+        path="/teacher/forgot-password"
+        element={<TeacherForgotPassword />}
+      />
+      <Route
+        path="/teacher/verify-otp"
+        element={<TeacherVerifyOtp />}
+      />
+      <Route
+        path="/teacher/reset-password"
+        element={<TeacherResetPassword />}
+      />
     </Routes>
   );
 }
