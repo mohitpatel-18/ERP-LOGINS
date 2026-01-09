@@ -1,6 +1,7 @@
 import StudentLogin from "./StudentLogin";
 import TeacherLogin from "./TeacherLogin";
 import AdminLogin from "./AdminLogin";
+import ManageTeachers from "../erp/admin/ManageTeachers"
 import{Link}from"react-router-dom";
 export default function Dashboard() {
   return (
